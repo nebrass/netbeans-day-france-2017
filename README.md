@@ -21,3 +21,7 @@ Introduction des bases de développement Spring Boot:
 2. Présentation de la terminologie Docker: Image; Container; Dockerfile; Docker-Machine  
 3. Présentation de Docker-Compose, Docker-Swarm
 4. Présentation de Docker Hub et de la livraison continue via Docker
+<<<<<<< HEAD
+=======
+
+>>>>>>> Initial commit
