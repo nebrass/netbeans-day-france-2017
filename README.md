@@ -36,7 +36,7 @@ spring.datasource.password=p4SSW0rd
 ```
 
 * PostgreSQL Maven Dependency
-```
+```xml
 <dependency>
     <groupId>postgresql</groupId>
     <artifactId>postgresql</artifactId>
@@ -45,7 +45,7 @@ spring.datasource.password=p4SSW0rd
 ```
 
 * Dockerfile example
-```
+```dockerfile
 FROM openjdk:8-jre-alpine
 
 ADD DemoApp.jar /app.jar
@@ -76,12 +76,12 @@ CMD java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
 </plugin>
 ```
 * Build Docker Image using Maven
-```
+```zsh
 mvn clean install docker:build
 ```
 
 * Docker Run PostgreSQL Container
-```
+```docker
 docker run -d \                                                                       
     --name demo-postgres \
     -e POSTGRES_USER=developer
@@ -91,7 +91,7 @@ docker run -d \
 ```
 
 * Docker Run App Container
-```
+```docker
 docker run -d \
     --name app-container \
     --link demo-postgres:postgres
@@ -101,12 +101,12 @@ docker run -d \
 ```
 
 * Docker Run PostgreSQL Container with persistent data
-```
+```docker
 docker run -d -p 3306:3306 -v /path/in/host:/var/lib/postgresql/data postgres:latest
 ```
 
 * Docker-compose file
-```
+```yaml
 version: '2'
 services:
     demoapp-app:
@@ -129,12 +129,12 @@ services:
 ### Deboguer une application déployée dans un conteneur Docker
 En se basant sur [ce chapitre de la doc officielle](http://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-running-your-application.html):
 Pour démarrer l'application en mode Debug; il suffit d'ajouter ces paramètres dans la ligne d'exécution:
-```
+```bash
 -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n
 ```
 
 Donc le nouveau Dockerfile sera:
-```
+```dockerfile
 FROM openjdk:8-jre-alpine
 
 ADD DemoApp.jar /app.jar
