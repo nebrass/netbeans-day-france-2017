@@ -28,12 +28,20 @@ Introduction des bases de développement Spring Boot:
 ```properties
 management.security.enabled=false
 spring.jpa.hibernate.ddl-auto=create
-spring.jpa.database=MYSQL
 
-spring.datasource.url=jdbc:mysql://mysql:3306/demo?useSSL=false
-spring.datasource.username=root
+spring.datasource.url=jdbc:postgresql://postgres:5432/demo
+spring.datasource.platform=POSTGRESQL
+spring.datasource.username=developer
 spring.datasource.password=p4SSW0rd
-spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+```
+
+* PostgreSQL Maven Dependency
+```
+<dependency>
+    <groupId>postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>9.1-901-1.jdbc4</version>
+</dependency>
 ```
 
 * Dockerfile example
@@ -72,28 +80,29 @@ CMD java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
 mvn clean install docker:build
 ```
 
-* Docker Run MySQL Container
+* Docker Run PostgreSQL Container
 ```
 docker run -d \                                                                       
-    --name demo-mysql \
-    -e MYSQL_ROOT_PASSWORD=p4SSW0rd \
-    -e MYSQL_DATABASE=demo \
-    -p 3306:3306 mysql:latest
+    --name demo-postgres \
+    -e POSTGRES_USER=developer
+    -e POSTGRES_PASSWORD=p4SSW0rd \
+    -e POSTGRES_DB=demo \
+    -p 5432:5432 postgres:latest
 ```
 
 * Docker Run App Container
 ```
 docker run -d \
     --name app-container \
-    --link demo-mysql:mysql
+    --link demo-postgres:postgres
     -p 8080:8080
     -p 8000:8000
     demo-app
 ```
 
-* Docker Run MySQL Container with persistent data
+* Docker Run PostgreSQL Container with persistent data
 ```
-docker run -d -p 3306:3306 -v /path/in/host:/var/lib/mysql mysql:latest
+docker run -d -p 3306:3306 -v /path/in/host:/var/lib/postgresql/data postgres:latest
 ```
 
 * Docker-compose file
@@ -101,41 +110,20 @@ docker run -d -p 3306:3306 -v /path/in/host:/var/lib/mysql mysql:latest
 version: '2'
 services:
     demoapp-app:
-        image: demoapp
-        external_links:
-            - demoapp-mysql:mysql
-        ports:
-            - 8080:8080
-            - 8000:8000
-    demoapp-mysql:
-        image: mysql
-        environment:
-            - MYSQL_HOST=localhost
-            - MYSQL_ROOT_PASSWORD=p4SSW0rd
-            - MYSQL_DATABASE=demo
-        ports:
-            - 3306:3306
-```
-* An other example
-```
-    demoapp-app:
         image: demo-app
-        links:
-            - demoapp-mysql
         external_links:
-            - demoapp-mysql:mysql
+            - demoapp-postgres:postgres
         ports:
             - 8080:8080
             - 8000:8000
-    demoapp-mysql:
-        image: mysql
+    demoapp-postgres:
+        image: postgres
         environment:
-          MYSQL_ROOT_PASSWORD: 'p4SSW0rd'
-          MYSQL_USER: dev
-          MYSQL_PASSWORD: 'p4SSW0rd'
-          MYSQL_DATABASE: demo
+            - POSTGRES_DB=demo
+            - POSTGRES_PASSWORD=p4SSW0rd
+            - POSTGRES_USER=developer
         ports:
-            - 3306:3306
+            - 5432:5432
 ```
 
 ### Deboguer une application déployée dans un conteneur Docker
