@@ -76,7 +76,7 @@ CMD java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
 </plugin>
 ```
 * Build Docker Image using Maven
-```zsh
+```bash
 mvn clean install docker:build
 ```
 
